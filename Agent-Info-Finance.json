@@ -6,7 +6,7 @@
         "rule": {
           "interval": [
             {
-              "triggerAtHour": 7
+              "triggerAtHour": 13
             }
           ]
         }
@@ -51,7 +51,7 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=Tu es un professeur de finance pédagogue qui s'adresse à un débutant motivé.\n\nVoici un article d'actualité financière :\nTitre : {{ $json.title }}\nContenu : {{ $json.contentSnippet }}\n\nGénère une réponse en français, directement au format HTML (sans balises ```html, juste le HTML brut), en suivant EXACTEMENT cette structure et ce style :\n\n<div style=\"font-family: Arial, sans-serif; max-width: 600px; color: #2c3e50;\">\n  <h2 style=\"color: #1a5276; border-bottom: 2px solid #1a5276; padding-bottom: 8px;\">📊 [Titre accrocheur de l'article]</h2>\n  \n  <h3 style=\"color: #2874a6;\">📝 Résumé</h3>\n  <p style=\"line-height: 1.6;\">[4-5 lignes de résumé clair, sans jargon]</p>\n  \n  <h3 style=\"color: #2874a6;\">💡 Le concept clé</h3>\n  <p style=\"line-height: 1.6;\">[Explication simple d'un concept financier de l'article]</p>\n  \n  <h3 style=\"color: #2874a6;\">🌍 Exemple concret</h3>\n  <p style=\"line-height: 1.6;\">[Un exemple de la vie réelle]</p>\n  \n  <div style=\"background-color: #eafaf1; border-left: 4px solid #27ae60; padding: 12px; margin-top: 16px;\">\n    <strong>✅ À retenir :</strong> [Une phrase choc à mémoriser]\n  </div>\n</div>\n\nRemplace les [crochets] par ton contenu. Ne mets rien d'autre que ce HTML.",
+        "text": "=Tu es le rédacteur en chef d'une newsletter financière quotidienne, pédagogue et vivante, qui s'adresse à un débutant motivé. Ton style : clair, structuré, avec des emojis pertinents, jamais ennuyeux.\n\nVoici les articles d'actualité financière du jour (format JSON) :\n{{ JSON.stringify($json.data) }}\n\nRédige UNE newsletter complète en français, en HTML brut (sans balises ```html), avec :\n\n1. Un TITRE accrocheur pour l'édition du jour\n2. Une intro de 2 lignes qui donne le ton\n3. Une section \"📚 LE RÉCAP DU JOUR\" : pour chaque article important, un paragraphe court avec le titre en gras, l'essentiel en 2-3 lignes, et le lien vers l'article source\n4. Une section \"💡 LE CONCEPT À RETENIR\" : choisis UN concept financier issu de l'actu du jour et explique-le simplement avec un exemple concret\n5. Une conclusion \"✅ CE QU'IL FAUT MÉMORISER\" en une phrase\n\nSois synthétique mais pédagogue. N'invente jamais de chiffres qui ne sont pas dans les articles.",
         "messages": {
           "messageValues": []
         },
@@ -60,7 +60,7 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.9,
       "position": [
-        192,
+        400,
         16
       ],
       "id": "c7b307cb-6abe-4430-9fa3-e00c31c75bcd",
@@ -97,7 +97,7 @@
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
       "position": [
-        544,
+        752,
         16
       ],
       "id": "9f46f15c-8441-45e8-bf54-a55bbed6feb4",
@@ -109,6 +109,20 @@
           "name": "SMTP account"
         }
       }
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        240,
+        16
+      ],
+      "id": "28e4b3f1-25f9-485c-b862-ccf2f67bae2a",
+      "name": "Aggregate"
     }
   ],
   "pinData": {},
@@ -139,7 +153,7 @@
       "main": [
         [
           {
-            "node": "Basic LLM Chain1",
+            "node": "Aggregate",
             "type": "main",
             "index": 0
           }
@@ -167,15 +181,26 @@
           }
         ]
       ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate",
     "availableInMCP": false
   },
-  "versionId": "1e77c68d-e421-4822-a29d-cc12884981e1",
+  "versionId": "0d867ce4-32c0-4fc7-8be6-55257879fd31",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "e595685213144efc8148508a692827c4ce2aeb40c9842cbacca602b9fb54b1c6"
