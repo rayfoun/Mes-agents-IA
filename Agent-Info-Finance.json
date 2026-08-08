@@ -37,7 +37,7 @@
     },
     {
       "parameters": {
-        "maxItems": 3
+        "maxItems": 8
       },
       "type": "n8n-nodes-base.limit",
       "typeVersion": 1,
@@ -51,7 +51,7 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=Tu es le rédacteur en chef d'une newsletter financière quotidienne, pédagogue et vivante, qui s'adresse à un débutant motivé. Ton style : clair, structuré, avec des emojis pertinents, jamais ennuyeux.\n\nVoici les articles d'actualité financière du jour (format JSON) :\n{{ JSON.stringify($json.data) }}\n\nRédige UNE newsletter complète en français, en HTML brut (sans balises ```html), avec :\n\n1. Un TITRE accrocheur pour l'édition du jour\n2. Une intro de 2 lignes qui donne le ton\n3. Une section \"📚 LE RÉCAP DU JOUR\" : pour chaque article important, un paragraphe court avec le titre en gras, l'essentiel en 2-3 lignes, et le lien vers l'article source\n4. Une section \"💡 LE CONCEPT À RETENIR\" : choisis UN concept financier issu de l'actu du jour et explique-le simplement avec un exemple concret\n5. Une conclusion \"✅ CE QU'IL FAUT MÉMORISER\" en une phrase\n\nSois synthétique mais pédagogue. N'invente jamais de chiffres qui ne sont pas dans les articles.\n\nEnrobe toute la newsletter dans ce template HTML (garde le style exact, remplis le contenu) :\n\n<div style=\"max-width:600px;margin:0 auto;font-family:'Segoe UI',Arial,sans-serif;background:#ffffff;\">\n  <div style=\"background:linear-gradient(135deg,#1a5276,#2874a6);padding:24px;text-align:center;\">\n    <h1 style=\"color:#ffffff;margin:0;font-size:24px;\">📈 [TITRE DU JOUR]</h1>\n    <p style=\"color:#d6eaf8;margin:8px 0 0;font-size:13px;\">[Date] · Ton brief finance quotidien</p>\n  </div>\n  <div style=\"padding:24px;color:#2c3e50;line-height:1.6;\">\n    [CONTENU : sections avec des <h2 style=\"color:#1a5276;border-bottom:2px solid #eaeded;padding-bottom:6px;\"> pour les titres de section]\n    [Pour chaque encadré important, utilise :\n      <div style=\"background:#eafaf1;border-left:4px solid #27ae60;padding:14px;border-radius:4px;margin:16px 0;\">...</div>]\n  </div>\n  <div style=\"background:#f8f9f9;padding:16px;text-align:center;font-size:12px;color:#85929e;\">\n    Généré automatiquement · Ton agent finance\n  </div>\n</div>\n\nSi les articles contiennent des données chiffrées comparables (indices, performances, pourcentages), génère un graphique QuickChart et insère-le dans la newsletter avec une balise <img>. Construis l'URL au format :\nhttps://quickchart.io/chart?w=500&h=300&c={type:'bar',data:{labels:[...],datasets:[{label:'...',data:[...]}]}}\nEncode correctement l'URL. Si aucune donnée chiffrée n'est disponible, n'ajoute pas de graphique.",
+        "text": "=Tu es le rédacteur en chef d'une newsletter financière quotidienne haut de gamme, à la fois pédagogue et incisive. Ton lecteur est un débutant motivé qui veut COMPRENDRE, pas juste être informé. Il doit finir la lecture en ayant appris quelque chose de durable et en sachant ce que ça change pour lui concrètement.\n\nVoici les articles d'actualité financière du jour (JSON) :\n{{ JSON.stringify($json.data) }}\n\nRÈGLES ABSOLUES :\n- N'invente JAMAIS de chiffre, de date ou de fait qui ne soit pas dans les articles. Si une information manque, écris l'analyse sans elle plutôt que de la fabriquer.\n- Si un article n'a aucun rapport avec la finance ou l'économie, ignore-le complètement.\n- Sélectionne les 3 à 4 articles les PLUS intéressants. Mieux vaut 3 sujets traités en profondeur que 6 survolés.\n- Écris en français, dans un ton vivant et direct. Tutoie le lecteur.\n\nSTRUCTURE DE CHAQUE ARTICLE (obligatoire, les 4 blocs) :\n1. CE QUI S'EST PASSÉ — 3 à 4 phrases qui résument les faits clairement.\n2. LE CONCEPT — identifie UN concept financier présent dans cet article (ex: fusion-acquisition, sinistralité, taux directeur, effet de levier...), définis-le simplement et explique-le avec une analogie du quotidien. Ce bloc doit faire 4 à 5 phrases : c'est le cœur pédagogique.\n3. POURQUOI ÇA COMPTE — remets le sujet dans son contexte : qui gagne, qui perd, quelle tendance de fond ça révèle.\n4. ET TOI DANS TOUT ÇA ? — le bloc le plus important. Explique concrètement en quoi ce sujet peut toucher un particulier français : son épargne, son assurance, son pouvoir d'achat, son crédit, ses investissements, son emploi. Sois honnête : si l'impact direct est faible, dis-le et explique plutôt ce que ça signale pour l'avenir. Jamais de langue de bois.\n\nRends le résultat en HTML brut (sans balises ```html), en respectant EXACTEMENT ce template :\n\n<div style=\"max-width:640px;margin:0 auto;font-family:'Segoe UI',Arial,sans-serif;background:#ffffff;\">\n\n  <div style=\"background:linear-gradient(135deg,#1a5276,#2874a6);padding:28px 24px;text-align:center;\">\n    <h1 style=\"color:#ffffff;margin:0;font-size:23px;line-height:1.3;\">📈 [TITRE ACCROCHEUR DU JOUR]</h1>\n    <p style=\"color:#d6eaf8;margin:10px 0 0;font-size:13px;\">[Date du jour] · Ton brief finance quotidien</p>\n  </div>\n\n  <div style=\"padding:24px;color:#2c3e50;line-height:1.65;font-size:15px;\">\n\n    <p style=\"font-size:16px;color:#34495e;margin-top:0;\"><em>[Intro de 2 phrases qui donne le ton et annonce les sujets]</em></p>\n\n    <!-- RÉPÉTER CE BLOC POUR CHAQUE ARTICLE -->\n    <div style=\"border:1px solid #e5e8e8;border-radius:8px;padding:20px;margin:24px 0;\">\n\n      <h2 style=\"color:#1a5276;font-size:19px;margin:0 0 14px;line-height:1.35;\">[Titre du sujet reformulé de façon accrocheuse]</h2>\n\n      <p style=\"margin:0 0 16px;\">[CE QUI S'EST PASSÉ : 3-4 phrases]</p>\n\n      <div style=\"background:#fef9e7;border-left:4px solid #f1c40f;padding:14px 16px;border-radius:4px;margin:16px 0;\">\n        <strong style=\"color:#9a7d0a;\">💡 LE CONCEPT : [nom du concept]</strong><br>\n        <span style=\"display:block;margin-top:8px;\">[Définition + analogie du quotidien, 4-5 phrases]</span>\n      </div>\n\n      <p style=\"margin:16px 0;\"><strong style=\"color:#1a5276;\">🌍 Pourquoi ça compte —</strong> [contexte, gagnants/perdants, tendance de fond]</p>\n\n      <div style=\"background:#eafaf1;border-left:4px solid #27ae60;padding:14px 16px;border-radius:4px;margin:16px 0;\">\n        <strong style=\"color:#1e8449;\">🎯 ET TOI DANS TOUT ÇA ?</strong><br>\n        <span style=\"display:block;margin-top:8px;\">[Impact concret sur un particulier français : épargne, assurance, crédit, pouvoir d'achat, emploi. Honnête si l'impact est indirect.]</span>\n      </div>\n\n      <p style=\"margin:14px 0 0;\"><a href=\"[URL de l'article]\" style=\"color:#2874a6;font-size:13px;text-decoration:none;\">📖 Lire l'article complet →</a></p>\n\n    </div>\n    <!-- FIN DU BLOC ARTICLE -->\n\n    <div style=\"background:#1a5276;color:#ffffff;padding:20px;border-radius:8px;margin-top:28px;\">\n      <strong style=\"font-size:16px;\">✅ CE QU'IL FAUT MÉMORISER AUJOURD'HUI</strong>\n      <ul style=\"margin:12px 0 0;padding-left:20px;line-height:1.7;\">\n        <li>[Point 1 : une idée forte à retenir]</li>\n        <li>[Point 2]</li>\n        <li>[Point 3]</li>\n      </ul>\n    </div>\n\n  </div>\n\n  <div style=\"background:#f8f9f9;padding:16px;text-align:center;font-size:12px;color:#85929e;\">\n    Généré automatiquement · Ton agent finance\n  </div>\n\n</div>\n\nRemplis tous les [crochets] avec ton contenu. Ne renvoie rien d'autre que ce HTML.",
         "messages": {
           "messageValues": []
         },
@@ -68,14 +68,16 @@
     },
     {
       "parameters": {
-        "model": "llama-3.3-70b-versatile",
-        "options": {}
+        "model": "openai/gpt-oss-120b",
+        "options": {
+          "maxTokensToSample": 4096
+        }
       },
       "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
       "typeVersion": 1,
       "position": [
-        112,
-        224
+        400,
+        192
       ],
       "id": "4cc89cf3-a723-4624-8b7c-728c98cb0a75",
       "name": "Groq Chat Model",
@@ -200,7 +202,7 @@
     "binaryMode": "separate",
     "availableInMCP": false
   },
-  "versionId": "d61f20fe-2d4c-4033-a34a-8d618f89d19b",
+  "versionId": "165c887b-beb3-4689-ae88-de8ce6396399",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "e595685213144efc8148508a692827c4ce2aeb40c9842cbacca602b9fb54b1c6"
