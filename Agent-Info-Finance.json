@@ -163,7 +163,7 @@
     },
     {
       "parameters": {
-        "jsCode": "let raw = $input.first().json.text.trim();\n// nettoie d'éventuelles balises de code parasites\nraw = raw.replace(/```json/g, '').replace(/```/g, '').trim();\n\nlet concepts = [];\ntry {\n  concepts = JSON.parse(raw);\n} catch (e) {\n  // si le parsing échoue, on renvoie une liste vide plutôt que de planter\n  return [];\n}\n\n// transforme chaque concept en item n8n distinct\nreturn concepts.map(c => ({ json: c }));"
+        "jsCode": "// ═══════════════════════════════════════════════════════════\n//  EXTRACTEUR DE CONCEPTS → transforme la réponse de l'IA\n//  (du texte) en données rangeables dans la Data Table\n// ═══════════════════════════════════════════════════════════\n\n// 1) On récupère la réponse de l'IA (le champ \"text\" du nœud précédent)\n//    et on enlève les espaces vides au début et à la fin.\nlet raw = $input.first().json.text.trim();\n\n// 2) Les IA entourent parfois leur JSON de balises ```json ... ```\n//    On les supprime pour ne garder que le JSON pur, sinon la\n//    conversion de l'étape suivante planterait.\nraw = raw.replace(/```json/g, '').replace(/```/g, '').trim();\n\n// 3) On prépare une liste vide qui accueillera les concepts.\nlet concepts = [];\n\n// 4) On tente de convertir le texte en vraies données (JSON.parse).\n//    C'est l'étape clé : texte → données exploitables.\ntry {\n  concepts = JSON.parse(raw);\n} catch (e) {\n  // Filet de sécurité : si l'IA a mal formaté sa réponse,\n  // on renvoie une liste vide au lieu de faire planter tout le workflow.\n  return [];\n}\n\n// 5) n8n exige que chaque donnée soit emballée dans { json: ... }.\n//    On parcourt chaque concept et on l'emballe à ce format.\n//    Résultat : 1 concept = 1 item = 1 future ligne dans la base.\nreturn concepts.map(c => ({ json: c }));"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -406,7 +406,7 @@
     "binaryMode": "separate",
     "availableInMCP": false
   },
-  "versionId": "55b6af6d-8837-4ddc-a9cb-4a7a962addce",
+  "versionId": "f0fd4721-c9f9-44c5-b5a8-03b8045b4e52",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "e595685213144efc8148508a692827c4ce2aeb40c9842cbacca602b9fb54b1c6"
