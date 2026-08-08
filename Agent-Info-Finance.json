@@ -125,6 +125,172 @@
       ],
       "id": "28e4b3f1-25f9-485c-b862-ccf2f67bae2a",
       "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Voici la newsletter financière du jour au format HTML :\n{{ $json.text }}\n\nExtrais chaque concept financier expliqué dans cette newsletter. Réponds UNIQUEMENT avec un tableau JSON valide, sans aucun texte avant ni après, sans balises de code. Format EXACT :\n[\n  {\n    \"concept\": \"nom court du concept\",\n    \"definition\": \"l'explication simple donnée, en 1 à 2 phrases\",\n    \"article_source\": \"le titre du sujet concerné\",\n    \"lien_source\": \"l'URL de l'article si présente, sinon chaîne vide\",\n    \"impact_perso\": \"en quoi ça affecte un particulier, en 1 phrase\"\n  }\n]\n\nS'il n'y a aucun concept, réponds exactement : []",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        672,
+        288
+      ],
+      "id": "10c4a227-514d-4aa4-9945-2f8793515d30",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": "llama-3.1-8b-instant",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        672,
+        448
+      ],
+      "id": "41e47c62-777b-436b-924d-4d02218051d3",
+      "name": "Groq Chat Model1",
+      "credentials": {
+        "groqApi": {
+          "id": "CdHG24AxuOA6JGTU",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let raw = $input.first().json.text.trim();\n// nettoie d'éventuelles balises de code parasites\nraw = raw.replace(/```json/g, '').replace(/```/g, '').trim();\n\nlet concepts = [];\ntry {\n  concepts = JSON.parse(raw);\n} catch (e) {\n  // si le parsing échoue, on renvoie une liste vide plutôt que de planter\n  return [];\n}\n\n// transforme chaque concept en item n8n distinct\nreturn concepts.map(c => ({ json: c }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1024,
+        288
+      ],
+      "id": "5b3cade2-8136-44a1-8777-c629444bd23c",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "RQiRGswnGr9olMd6",
+          "mode": "list",
+          "cachedResultName": "Memoire-concepts-finance",
+          "cachedResultUrl": "/projects/MeFzfGRjzTgosJQG/datatables/RQiRGswnGr9olMd6"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "date_appris": "={{ $now.toFormat('yyyy-MM-dd') }}",
+            "concept": "={{ $json.concept }}",
+            "definition": "={{ $json.definition }}",
+            "nb_revisions": 0,
+            "article_source": "={{ $json.article_source }}",
+            "lien_source": "={{ $json.lien_source }}",
+            "impact_perso": "={{ $json.impact_perso }}",
+            "prochaine_revision": "={{ $now.plus({ days: 1 }).toFormat('yyyy-MM-dd') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "date_appris",
+              "displayName": "date_appris",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "concept",
+              "displayName": "concept",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "definition",
+              "displayName": "definition",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "article_source",
+              "displayName": "article_source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "lien_source",
+              "displayName": "lien_source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "impact_perso",
+              "displayName": "impact_perso",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "nb_revisions",
+              "displayName": "nb_revisions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "prochaine_revision",
+              "displayName": "prochaine_revision",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1232,
+        288
+      ],
+      "id": "03c4adf3-5c76-41ec-b5fa-4d906d2437b4",
+      "name": "Insert row"
     }
   ],
   "pinData": {},
@@ -180,6 +346,11 @@
             "node": "Send an Email",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
@@ -194,6 +365,39 @@
           }
         ]
       ]
+    },
+    "Groq Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Insert row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -202,7 +406,7 @@
     "binaryMode": "separate",
     "availableInMCP": false
   },
-  "versionId": "165c887b-beb3-4689-ae88-de8ce6396399",
+  "versionId": "55b6af6d-8837-4ddc-a9cb-4a7a962addce",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "e595685213144efc8148508a692827c4ce2aeb40c9842cbacca602b9fb54b1c6"
